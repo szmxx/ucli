@@ -57,7 +57,6 @@
     "changelogen": "^0.5.5",
     "citty": "^0.1.4",
     "consola": "^3.2.3",
-    "dotenv": "^16.3.1",
     "execa": "^8.0.1",
     "figlet": "^1.6.0",
     "fs-extra": "^11.1.1",

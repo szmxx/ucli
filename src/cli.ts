@@ -8,7 +8,6 @@ import { consola } from "consola";
 import figlet from "figlet";
 import { defineCommand, runMain } from "citty";
 import { name, version, description } from "../package.json";
-import "dotenv/config";
 
 function start() {
   try {
