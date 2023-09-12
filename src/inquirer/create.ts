@@ -90,7 +90,7 @@ function handleTemp(
           value: "default",
         },
         {
-          name: "手动选择功能",
+          name: "选择功能",
           value: "manual",
         },
       ],
