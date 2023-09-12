@@ -1,0 +1,80 @@
+{
+  "name": "@szmxx/ucli",
+  "version": "0.0.0",
+  "description": "A unified scaffold tool",
+  "author": {
+    "name": "cola",
+    "email": "szmintel@gmail.com",
+    "url": "https://aitimi.cn"
+  },
+  "license": "MIT",
+  "funding": "https://github.com/sponsors/szmxx",
+  "homepage": "https://github.com/szmxx/ucli#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/szmxx/ucli",
+    "directory": "."
+  },
+  "bugs": {
+    "url": "https://github.com/szmxx/ucli/issues"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs"
+    }
+  },
+  "main": "./dist/index.mjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "bin": {
+    "ucli": "./bin/index.mjs"
+  },
+  "files": [
+    "bin",
+    "dist"
+  ],
+  "engines": {
+    "node": ">=14"
+  },
+  "scripts": {
+    "prepack": "pnpm run build",
+    "build": "unbuild",
+    "stub": "unbuild --stub",
+    "test": "vitest dev --run",
+    "release": "pnpm test && changelogen --release --push && npm publish --access=public"
+  },
+  "keywords": [
+    "scaffold",
+    "nuxt3",
+    "vue3",
+    "vite",
+    "node"
+  ],
+  "dependencies": {
+    "chalk": "^5.3.0",
+    "changelogen": "^0.5.5",
+    "citty": "^0.1.4",
+    "consola": "^3.2.3",
+    "dotenv": "^16.3.1",
+    "execa": "^8.0.1",
+    "figlet": "^1.6.0",
+    "fs-extra": "^11.1.1",
+    "giget": "^1.1.2",
+    "inquirer": "^9.2.10",
+    "jiti": "^1.20.0",
+    "node-fetch-native": "^1.4.0",
+    "ora": "^7.0.1",
+    "pathe": "^1.1.1",
+    "rxjs": "^7.8.1",
+    "typescript": "^5.2.2",
+    "unbuild": "^2.0.0",
+    "vitest": "^0.34.3"
+  },
+  "devDependencies": {
+    "@types/figlet": "^1.5.6",
+    "@types/fs-extra": "^11.0.1",
+    "@types/inquirer": "^9.0.3",
+    "@types/node": "^20.5.9"
+  }
+}
