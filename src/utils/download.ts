@@ -69,7 +69,6 @@ export async function download(
       `${provider}:${username}/${name}#${refName}`,
       {
         auth: auth?.stdout?.toString(),
-        registry: false,
         dir: dirName,
       }
     );
