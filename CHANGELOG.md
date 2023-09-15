@@ -1,6 +1,23 @@
 # Changelog
 
 
+## v0.0.3
+
+[compare changes](https://github.com/szmxx/ucli/compare/v0.0.2...v0.0.3)
+
+### 📖 Documentation
+
+- Add pnpm manager ([ab6d0d9](https://github.com/szmxx/ucli/commit/ab6d0d9))
+
+### 🤖 CI
+
+- Add ci ([6944c50](https://github.com/szmxx/ucli/commit/6944c50))
+- Add pnpm lock ([dcc5a07](https://github.com/szmxx/ucli/commit/dcc5a07))
+
+### ❤️ Contributors
+
+- Cola <szmintel@gmail.com>
+
 ## v0.0.2
 
 [compare changes](https://github.com/szmxx/ucli/compare/v0.0.1...v0.0.2)
