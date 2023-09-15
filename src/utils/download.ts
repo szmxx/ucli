@@ -49,6 +49,7 @@ export async function download(
     } = TemplateMap?.[templateName as TemplateType];
 
     const dirName = repoName || defaultDir;
+
     // 强制覆盖
     const bool = fs.pathExistsSync(`./${dirName}`);
     if (bool) {

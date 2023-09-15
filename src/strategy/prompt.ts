@@ -42,4 +42,7 @@ export default class Strategy {
       default: defaults,
     });
   }
+  node(prompts: Subject<unknown>) {
+    prompts.complete();
+  }
 }

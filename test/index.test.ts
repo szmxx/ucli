@@ -5,7 +5,6 @@
  * @Description:
  */
 import { expect, it, describe } from "vitest";
-import {} from "../src";
 
 describe("ucli", () => {
   it.todo("pass", () => {

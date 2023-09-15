@@ -28,6 +28,9 @@ export async function create() {
             prompts.complete();
             resolve(result);
             break;
+          case "license":
+            resolve(result);
+            break;
         }
       });
 
