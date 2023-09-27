@@ -11,7 +11,15 @@
     "at-rule-no-unknown": [
       true,
       {
-        "ignoreAtRules": ["apply", "layer", "screen", "use", "include", "mixin"]
+        "ignoreAtRules": [
+          "apply",
+          "layer",
+          "screen",
+          "use",
+          "include",
+          "mixin",
+          "forward"
+        ]
       }
     ],
     "order/order": ["custom-properties", "declarations"],

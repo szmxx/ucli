@@ -13,5 +13,6 @@
       target="_blank"
     />
     
+    <LangToggle />
   </div>
 </template>

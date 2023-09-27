@@ -5,9 +5,6 @@ node_modules
 .output
 .nuxt
 
-.env
-.env.*
-
 stats.html
 
 .vercel

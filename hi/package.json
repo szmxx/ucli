@@ -6,7 +6,7 @@
   "version": "1.0.0",
   "funding": "https://github.com/sponsors/szmxx",
   "homepage": "undefined#readme",
-  "license": "APACHE-2.0",
+  "license": "MIT",
   "type": "module",
   "author": {
     "name": "cola",
@@ -47,10 +47,12 @@
     "changelogen": "changelogen --bump"
   },
   "dependencies": {
+    "@element-plus/nuxt": "^1.0.5",
     "@iconify-json/carbon": "^1.1.19",
     "@pinia/nuxt": "^0.4.11",
     "@vueuse/nuxt": "^10.3.0",
     "dayjs": "^1.11.9",
+    "element-plus": "^2.3.12",
     "nuxt": "^3.6.5"
   },
   "devDependencies": {
@@ -59,6 +61,7 @@
     "@commitlint/cz-commitlint": "^17.7.1",
     "@nuxt/devtools": "^0.7.4",
     "@nuxtjs/color-mode": "^3.3.0",
+    "@nuxtjs/i18n": "8.0.0-rc.4",
     "@unocss/nuxt": "^0.54.1",
     "@vite-pwa/nuxt": "^0.1.0",
     "@vue/eslint-config-prettier": "^8.0.0",
