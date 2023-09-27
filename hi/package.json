@@ -6,7 +6,7 @@
   "version": "1.0.0",
   "funding": "https://github.com/sponsors/szmxx",
   "homepage": "undefined#readme",
-  "license": "APACHE-2.0",
+  "license": "MIT",
   "type": "module",
   "author": {
     "name": "cola",

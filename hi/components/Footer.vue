@@ -12,6 +12,6 @@
       href="https://github.com/szmxx/template-nuxt3"
       target="_blank"
     />
-    
+    <DarkToggle />
   </div>
 </template>
