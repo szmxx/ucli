@@ -44,6 +44,7 @@ export async function initREPO(pkg: Record<string, unknown>) {
       spinner.succeed(chalk.green("创建远程仓库成功"));
       return ssh_url;
     } else {
+      spinner.fail(chalk.red("远程仓库或已存在"));
       throw new Error("创建远程仓库失败，仓库或已存在");
     }
   } catch (error) {

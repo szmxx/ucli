@@ -9,7 +9,7 @@ A unified scaffold tool
 Optional support for themes and internationalization
 - [Vite Template][vite] \
 Optional support for themes and internationalization
-- Node Template
+- [Node Template][node] \
 - Automatically \
 Automatically install dependencies, initialize git, and create remote warehouses
 
@@ -51,6 +51,7 @@ Published under [MIT License](./LICENSE).
 <!-- Badges -->
 [nuxt3]: https://github.com/szmxx/template-nuxt3
 [vite]: https://github.com/szmxx/template-vite
+[node]: https://github.com/szmxx/template-node
 [version]: https://img.shields.io/npm/v/%40szmxx/ucli
 [downloads]: https://img.shields.io/npm/dm/%40szmxx/ucli
 [npm]: https://npmjs.com/package/@szmxx/ucli
