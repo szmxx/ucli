@@ -29,7 +29,7 @@
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
   "bin": {
-    "ucli": "./bin/index.mjs"
+    "uncli": "./bin/index.mjs"
   },
   "files": [
     "bin",

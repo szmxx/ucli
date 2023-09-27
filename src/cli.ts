@@ -1,3 +1,4 @@
+
 import { consola } from "consola";
 import figlet from "figlet";
 import { defineCommand, runMain } from "citty";
