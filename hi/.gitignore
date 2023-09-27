@@ -1,10 +1,14 @@
 logs
 *.log
-
-node_modules
 dist
+node_modules
+.output
+.nuxt
 
 .env
 .env.*
 
+stats.html
+
+.vercel
 .DS_Store

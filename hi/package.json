@@ -1,12 +1,13 @@
 {
   "name": "hi",
   "private": true,
-  "version": "1.0.0",
-  "type": "module",
+  "description": "template for nuxt3",
   "packageManager": "pnpm@8.6.11",
+  "version": "1.0.0",
   "funding": "https://github.com/sponsors/szmxx",
-  "homepage": "https://github.com/szmxx/template-vite#readme",
-  "license": "MIT",
+  "homepage": "undefined#readme",
+  "license": "APACHE-2.0",
+  "type": "module",
   "author": {
     "name": "cola",
     "email": "szmintel@gmail.com",
@@ -14,90 +15,79 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/szmxx/template-vite",
     "directory": "."
   },
   "bugs": {
-    "url": "https://github.com/szmxx/template-vite/issues"
+    "url": "undefined/issues"
   },
   "keywords": [
     "template",
+    "nuxt3",
     "vue3",
     "vite"
   ],
   "scripts": {
-    "dev": "vite",
-    "build": "vue-tsc && vite build",
-    "preview": "vite preview",
-    "prepare": "husky install",
+    "build": "nuxi build --dotenv .env.production",
+    "dev": "nuxi dev --dotenv .env.development",
+    "dev:pwa": "VITE_PLUGIN_PWA=true nuxi dev",
+    "start": "node .output/server/index.mjs",
+    "typecheck": "vue-tsc --noEmit",
+    "postinstall": "nuxi prepare",
+    "generate": "nuxi generate",
+    "analyze": "nuxi analyze",
+    "start:generate": "npx serve .output/public",
+    "test:unit": "vitest",
+    "test:js-dom": "VITEST_DOM_ENV=js-dom pnpm test:unit --run",
+    "test": "pnpm test:js-dom --api.port 3060 ",
+    "preinstall": "husky install",
     "lint": "eslint --ext .ts,vue,tsx --ignore-path .gitignore .",
-    "style": "stylelint src/**/*.{css,scss,vue}",
+    "style": "stylelint ./**/*.{css,scss,vue}",
     "tslint": "vue-tsc --noEmit",
     "commit": "git-cz",
-    "test": "vitest dev --run",
-    "ui": "vitest --ui",
-    "coverage": "vitest run --coverage",
-    "changelogen": "changelogen --bump",
-    "release": "changelogen --release"
+    "changelogen": "changelogen --bump"
   },
   "dependencies": {
-    "@iconify-json/carbon": "^1.1.18",
-    "@vueuse/core": "^10.2.1",
-    "axios": "^1.4.0",
-    "element-plus": "^2.3.8",
-    "mitt": "^3.0.1",
-    "nprogress": "^0.2.0",
-    "pinia": "^2.1.4",
-    "qiankun": "^2.10.11",
-    "universal-cookie": "^6.1.1",
-    "vue": "^3.3.4",
-    "vue-request": "^2.0.3",
-    "vue-router": "^4.2.4"
+    "@iconify-json/carbon": "^1.1.19",
+    "@pinia/nuxt": "^0.4.11",
+    "@vueuse/nuxt": "^10.3.0",
+    "dayjs": "^1.11.9",
+    "nuxt": "^3.6.5"
   },
   "devDependencies": {
-    "@commitlint/cli": "^17.6.6",
-    "@commitlint/config-conventional": "^17.6.6",
-    "@commitlint/cz-commitlint": "^17.5.0",
-    "@types/jsdom": "^21.1.1",
-    "@types/node": "^20.4.2",
-    "@types/nprogress": "^0.2.0",
-    "@unocss/reset": "^0.55.7",
-    "@vitejs/plugin-vue": "^4.2.3",
-    "@vitejs/plugin-vue-jsx": "^3.0.1",
-    "@vitest/coverage-v8": "^0.34.4",
-    "@vitest/ui": "^0.33.0",
-    "@vue/eslint-config-prettier": "^7.1.0",
+    "@commitlint/cli": "^17.7.1",
+    "@commitlint/config-conventional": "^17.7.0",
+    "@commitlint/cz-commitlint": "^17.7.1",
+    "@nuxt/devtools": "^0.7.4",
+    "@nuxtjs/color-mode": "^3.3.0",
+    "@unocss/nuxt": "^0.54.1",
+    "@vite-pwa/nuxt": "^0.1.0",
+    "@vue/eslint-config-prettier": "^8.0.0",
     "@vue/eslint-config-typescript": "^11.0.3",
-    "@vue/test-utils": "^2.4.0",
     "changelogen": "^0.5.5",
     "commitizen": "^4.3.0",
-    "eslint": "^8.45.0",
+    "consola": "^3.2.3",
+    "eslint": "^8.46.0",
     "eslint-plugin-prettier": "^5.0.0",
-    "eslint-plugin-vue": "^9.15.1",
+    "eslint-plugin-vue": "^9.17.0",
     "husky": "^8.0.3",
     "jsdom": "^22.1.0",
     "jsonc-eslint-parser": "^2.3.0",
-    "lint-staged": "^13.2.3",
+    "lint-staged": "^14.0.1",
+    "nuxt-vitest": "^0.10.2",
+    "pinia": "^2.1.6",
     "postcss-html": "^1.5.0",
-    "prettier": "^3.0.0",
-    "sass": "^1.63.6",
-    "stylelint": "^15.10.1",
+    "prettier": "^3.0.3",
+    "sass": "^1.66.1",
+    "stylelint": "^15.10.3",
     "stylelint-config-standard": "^34.0.0",
-    "stylelint-config-standard-scss": "^10.0.0",
+    "stylelint-config-standard-scss": "^11.0.0",
     "stylelint-config-standard-vue": "^1.0.0",
     "stylelint-order": "^6.0.3",
-    "stylelint-prettier": "^4.0.0",
-    "terser": "^5.19.4",
+    "stylelint-prettier": "^4.0.2",
     "typescript": "^5.1.6",
-    "unocss": "^0.55.7",
-    "unplugin-auto-import": "^0.16.6",
-    "unplugin-icons": "^0.16.5",
-    "unplugin-vue-components": "^0.25.1",
-    "unplugin-vue-define-options": "^1.3.11",
-    "vite": "^4.4.4",
-    "vite-plugin-inspect": "^0.7.33",
-    "vitest": "^0.33.0",
-    "vue-tsc": "^1.8.5"
+    "vitest": "^0.34.2",
+    "vitest-environment-nuxt": "^0.10.2",
+    "vue-tsc": "^1.8.8"
   },
   "lint-staged": {
     "src/**/*.{json,md,vue}": "prettier -w -u",
@@ -108,14 +98,6 @@
   "config": {
     "commitizen": {
       "path": "@commitlint/cz-commitlint"
-    }
-  },
-  "pnpm": {
-    "peerDependencyRules": {
-      "ignoreMissing": [
-        "inquirer",
-        "postcss"
-      ]
     }
   }
 }
