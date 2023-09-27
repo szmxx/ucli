@@ -1,15 +1,8 @@
-/*
- * @Author: cola
- * @Date: 2023-09-08 13:10:03
- * @LastEditors: cola
- * @Description:
- */
 export const TemplateMap = {
   vite: {
-    provider: "github",
-    username: "szmxx",
     name: "template-vite",
     defaultDir: "vite-app",
+    tar: "https://codeload.github.com/szmxx/template-vite/tar.gz/refs/heads/",
     features: [
       {
         name: "主题",
@@ -25,10 +18,9 @@ export const TemplateMap = {
     components: ["empty", "element-plus", "vant"],
   },
   nuxt3: {
-    provider: "github",
     name: "template-nuxt3",
     defaultDir: "nuxt3-app",
-    username: "szmxx",
+    tar: "https://codeload.github.com/szmxx/template-nuxt3/tar.gz/refs/heads/",
     features: [
       {
         name: "主题",
@@ -44,10 +36,9 @@ export const TemplateMap = {
     components: ["empty", "element-plus", "vant"],
   },
   node: {
-    provider: "github",
     name: "template-node",
     defaultDir: "node-app",
-    username: "szmxx",
+    tar: "https://codeload.github.com/szmxx/template-node/tar.gz/refs/heads/",
     features: [],
   },
 };

@@ -1,9 +1,4 @@
-/*
- * @Author: cola
- * @Date: 2023-09-08 01:33:14
- * @LastEditors: cola
- * @Description:
- */
+
 import { consola } from "consola";
 import figlet from "figlet";
 import { defineCommand, runMain } from "citty";
