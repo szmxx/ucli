@@ -4,12 +4,12 @@
  * @LastEditors: cola
  * @Description:
  */
-import { consola } from "consola";
 import { $ } from "execa";
 import { chdir } from "node:process";
 import ora from "ora";
 import chalk from "chalk";
 import { createRepo } from "../api/github";
+import { debug } from "./index";
 const spinner = ora({
   text: "",
   spinner: "line",
@@ -48,7 +48,7 @@ export async function initREPO(pkg: Record<string, unknown>) {
     }
   } catch (error) {
     spinner.fail(chalk.red("创建远程仓库失败"));
-    consola.error(error);
+    debug(error);
   }
 }
 export async function initGIT(name: string, sshURL: string) {
@@ -65,7 +65,7 @@ export async function initGIT(name: string, sshURL: string) {
     spinner.succeed(chalk.green("git 初始化完成"));
   } catch (error) {
     spinner.fail(chalk.red("git 初始化失败"));
-    consola.error(error);
+    debug(error);
   } finally {
     chdir(`../`);
   }
@@ -79,7 +79,7 @@ export async function initInstall(name: string) {
     spinner.succeed(chalk.green("安装依赖成功"));
   } catch (error) {
     spinner.fail(chalk.red("安装依赖失败"));
-    consola.error(error);
+    debug(error);
   } finally {
     chdir(`../`);
   }
@@ -100,7 +100,7 @@ export async function initCommitPush(name: string) {
     spinner.succeed(chalk.green("git 提交推送至远程成功"));
   } catch (error) {
     spinner.fail(chalk.red("git 提交推送至远程失败"));
-    consola.error(error);
+    debug(error);
   } finally {
     chdir(`../`);
   }

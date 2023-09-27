@@ -4,7 +4,7 @@
  * @LastEditors: cola
  * @Description:
  */
-const baseURL = "https://api.github.com";
+const baseURL = "https://github.aitimi.cn";
 import fetch from "node-fetch-native";
 export async function createRepo(data: Record<string, unknown>, auth: string) {
   return fetch(`${baseURL}/user/repos`, {

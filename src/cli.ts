@@ -1,9 +1,3 @@
-/*
- * @Author: cola
- * @Date: 2023-09-08 01:33:14
- * @LastEditors: cola
- * @Description:
- */
 import { consola } from "consola";
 import figlet from "figlet";
 import { defineCommand, runMain } from "citty";
@@ -20,6 +14,7 @@ function start() {
       subCommands: {
         create: () => import("./commands/create").then((r) => r.default),
       },
+
       run({ args }) {
         if (!args.create && args._[0] !== "create") {
           consola.log(

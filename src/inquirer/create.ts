@@ -29,7 +29,7 @@ export async function create() {
             resolve(result);
             break;
           case "license":
-            resolve(result);
+            if (result["template"] === "node") resolve(result);
             break;
         }
       });
