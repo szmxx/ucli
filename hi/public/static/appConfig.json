@@ -1,0 +1,45 @@
+{
+  "title": "测试平台",
+  "development": {
+    "BASEURL": {
+      "host": "192.168.55.197",
+      "port": 3000,
+      "path": "public"
+    },
+    "APP_LIST": [
+      {
+        "name": "star-map",
+        "entry": "//localhost:9528",
+        "container": "#subapp-viewport",
+        "activeRule": ["/star"]
+      },
+      {
+        "name": "ghss-demo",
+        "entry": "//localhost:8081",
+        "container": "#subapp-viewport",
+        "activeRule": ["/ghss"]
+      }
+    ]
+  },
+  "production": {
+    "BASEURL": {
+      "host": "192.168.55.197",
+      "port": 3000,
+      "path": "public"
+    },
+    "APP_LIST": [
+      {
+        "name": "star-map",
+        "entry": "//localhost:9528",
+        "container": "#subapp-viewport",
+        "activeRule": ["/star"]
+      },
+      {
+        "name": "ghss-demo",
+        "entry": "//localhost:8081",
+        "container": "#subapp-viewport",
+        "activeRule": ["/ghss"]
+      }
+    ]
+  }
+}

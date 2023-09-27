@@ -1,11 +1,10 @@
 logs
 *.log
-dist
+
 node_modules
-.output
-.nuxt
+dist
 
-stats.html
+.env
+.env.*
 
-.vercel
 .DS_Store

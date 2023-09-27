@@ -4,7 +4,7 @@
     "type-empty": [2, "never"],
     "subject-empty": [2, "never"],
     "scope-empty": [0],
-    "scope-enum": [2, "always", ["core", "style", "docs", "test", "server"]]
+    "scope-enum": [2, "always", ["core", "style", "docs", "test"]]
   },
   "prompt": {
     "settings": {

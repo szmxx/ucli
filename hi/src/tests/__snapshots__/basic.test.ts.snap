@@ -1,0 +1,6 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`mount component > mount component 1`] = `
+"<h1>hello world</h1>
+<div class=\\"card\\"><button type=\\"button\\">count is 0</button></div>"
+`;

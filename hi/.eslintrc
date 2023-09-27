@@ -9,7 +9,8 @@
     "plugin:vue/vue3-recommended",
     "eslint:recommended",
     "@vue/typescript/recommended",
-    "@vue/prettier"
+    "@vue/prettier",
+    "./.eslintrc-auto-import.json"
   ],
   "plugins": ["vue"],
   "settings": {
@@ -65,10 +66,6 @@
   ],
   "rules": {
     "no-console": ["warn", { "allow": ["error"] }],
-    "no-debugger": "warn",
-    "@typescript-eslint/no-non-null-assertion": "off",
-    "vue/multi-word-component-names": "off",
-    "@typescript-eslint/no-empty-function": "off",
-    "prefer-const": "off"
+    "no-debugger": "warn"
   }
 }
