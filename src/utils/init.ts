@@ -1,9 +1,3 @@
-/*
- * @Author: cola
- * @Date: 2023-09-08 23:15:20
- * @LastEditors: cola
- * @Description:
- */
 import { $ } from "execa";
 import { chdir } from "node:process";
 import ora from "ora";
@@ -49,6 +43,7 @@ export async function initREPO(pkg: Record<string, unknown>) {
     }
   } catch (error) {
     spinner.fail(chalk.red("创建远程仓库失败"));
+    console.error(error);
     debug(error);
   }
 }

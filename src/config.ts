@@ -15,7 +15,7 @@ export const TemplateMap = {
         value: "i18n",
       },
     ],
-    components: ["empty", "element-plus", "vant"],
+    components: ["empty", "element-plus", "vant", "qiankun"],
   },
   nuxt3: {
     name: "template-nuxt3",
