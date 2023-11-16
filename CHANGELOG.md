@@ -1,6 +1,22 @@
 # Changelog
 
 
+## v0.0.5
+
+[compare changes](https://github.com/szmxx/ucli/compare/v0.0.4...v0.0.5)
+
+### 📖 Documentation
+
+- 文案优化 ([d78871d](https://github.com/szmxx/ucli/commit/d78871d))
+
+### 🏡 Chore
+
+- 解决冲突 ([44ddbd5](https://github.com/szmxx/ucli/commit/44ddbd5))
+
+### ❤️ Contributors
+
+- Cola <szmintel@gmail.com>
+
 ## v0.0.4
 
 [compare changes](https://github.com/szmxx/ucli/compare/v0.0.3...v0.0.4)
