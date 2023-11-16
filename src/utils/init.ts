@@ -30,7 +30,7 @@ export async function initREPO(pkg: Record<string, unknown>) {
       auth?.stdout?.toString?.()
     );
     const result = await res?.json();
-    const { ssh_url, html_url } = result;
+    const { ssh_url, html_url, message } = result;
     pkg.homepage = `${html_url}#readme`;
     if (pkg?.repository?.url) pkg.repository.url = html_url;
     if (pkg?.bugs?.url) pkg.bugs.url = `${html_url}/issues`;
@@ -38,6 +38,10 @@ export async function initREPO(pkg: Record<string, unknown>) {
       spinner.succeed(chalk.green("创建远程仓库成功"));
       return ssh_url;
     } else {
+      if (message === "Bad credentials") {
+        spinner.fail(chalk.red("授权失败"));
+        throw new Error("授权失败，请检查权限");
+      }
       spinner.fail(chalk.red("远程仓库或已存在"));
       throw new Error("创建远程仓库失败，仓库或已存在");
     }
