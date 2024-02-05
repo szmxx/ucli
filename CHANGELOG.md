@@ -1,6 +1,18 @@
 # Changelog
 
 
+## v0.0.6
+
+[compare changes](https://github.com/szmxx/ucli/compare/v0.0.5...v0.0.6)
+
+### 🩹 Fixes
+
+- Pref create remote error ([e2cbba2](https://github.com/szmxx/ucli/commit/e2cbba2))
+
+### ❤️ Contributors
+
+- Cola <szmintel@gmail.com>
+
 ## v0.0.5
 
 [compare changes](https://github.com/szmxx/ucli/compare/v0.0.4...v0.0.5)
