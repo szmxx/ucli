@@ -11,7 +11,8 @@ const spinner = ora({
 
 export async function init(pkg: Record<string, string>) {
   const sshUrl = await initREPO(pkg);
-  if (sshUrl) await initGIT(pkg.name, sshUrl);
+  await initGIT(pkg.name, sshUrl || "");
+  return sshUrl;
 }
 
 export async function initREPO(pkg: Record<string, unknown>) {
@@ -60,8 +61,9 @@ export async function initGIT(name: string, sshURL: string) {
     await $`git init`;
     // 切换 main 分支
     await $`git checkout -b main`;
-    // 初始化远程仓库
-    await $`git remote add origin ${sshURL}`;
+    if (sshURL)
+      // 初始化远程仓库
+      await $`git remote add origin ${sshURL}`;
     spinner.succeed(chalk.green("git 初始化完成"));
   } catch (error) {
     spinner.fail(chalk.red("git 初始化失败"));

@@ -10,6 +10,7 @@ Optional support for themes and internationalization
 - [Vite Template][vite] \
 Optional support for themes and internationalization
 - [Node Template][node] \
+Koa frame，JWT etc
 - Automatically \
 Automatically install dependencies, initialize git, and create remote warehouses
 

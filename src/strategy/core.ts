@@ -25,12 +25,12 @@ export default class Strategy {
       ViteTheme(this.path);
     }
     // 创建远程仓库，初始化 git
-    await init(pkg);
+    const sshUrl = await init(pkg);
     // 重新写入
     fs.writeFileSync(packagePath, JSON.stringify(pkg, null, 2));
 
     await initInstall(pkg.name);
-    await initCommitPush(pkg.name);
+    if (sshUrl) await initCommitPush(pkg.name);
   }
   async nuxt3(conf: Record<string, unknown>) {
     const packagePath = resolve(this.path, "./package.json");
@@ -41,12 +41,12 @@ export default class Strategy {
       NuxtTheme(this.path);
     }
     // 创建远程仓库，初始化 git
-    await init(pkg);
+    const sshUrl = await init(pkg);
     // 重新写入
     fs.writeFileSync(packagePath, JSON.stringify(pkg, null, 2));
 
     await initInstall(pkg.name);
-    await initCommitPush(pkg.name);
+    if (sshUrl) await initCommitPush(pkg.name);
   }
 
   async node(conf: Record<string, unknown>) {
@@ -54,12 +54,12 @@ export default class Strategy {
     const pkg = await this.pkg(packagePath, conf);
 
     // 创建远程仓库，初始化 git
-    await init(pkg);
+    const sshUrl = await init(pkg);
     // 重新写入
     fs.writeFileSync(packagePath, JSON.stringify(pkg, null, 2));
 
     await initInstall(pkg.name);
-    await initCommitPush(pkg.name);
+    if (sshUrl) await initCommitPush(pkg.name);
   }
 
   async pkg(packagePath: string, conf: Record<string, unknown>) {
