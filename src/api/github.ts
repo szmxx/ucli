@@ -1,17 +1,20 @@
-/*
- * @Author: cola
- * @Date: 2023-09-08 16:59:32
- * @LastEditors: cola
- * @Description:
- */
-const baseURL = "https://github.aitimi.cn";
 import fetch from "node-fetch-native";
-export async function createRepo(data: Record<string, unknown>, auth: string) {
+
+const baseURL = process.env.API_BASE_URL || "https://api.github.com";
+
+export async function createRepo(data: Record<string, unknown>, auth?: string) {
+  const token = auth || process.env.GITHUB_TOKEN;
+  
+  if (!token) {
+    throw new Error("GitHub token is required. Please provide it as parameter or set GITHUB_TOKEN environment variable.");
+  }
+
   return fetch(`${baseURL}/user/repos`, {
     method: "POST",
     body: JSON.stringify(data),
     headers: {
-      authorization: `Bearer ${auth}`,
+      authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
     },
   });
 }

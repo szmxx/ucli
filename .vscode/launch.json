@@ -1,0 +1,53 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug ucli CLI (built)",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/bin/index.mjs",
+      "args": [],
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "skipFiles": ["<node_internals>/**"],
+      "envFile": "${workspaceFolder}/.env",
+      "env": {
+        "NODE_ENV": "debug"
+      },
+      "preLaunchTask": "build"
+    },
+    {
+      "name": "Debug ucli create (built)",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/bin/index.mjs",
+      "args": ["create", "test-project"],
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "skipFiles": ["<node_internals>/**"],
+      "envFile": "${workspaceFolder}/.env",
+      "env": {
+        "NODE_ENV": "debug"
+      },
+      "preLaunchTask": "build"
+    },
+    {
+      "name": "Debug built CLI",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/bin/index.mjs",
+      "args": [],
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "skipFiles": ["<node_internals>/**"],
+      "envFile": "${workspaceFolder}/.env"
+    },
+    {
+      "name": "Attach to Node Process",
+      "type": "node",
+      "request": "attach",
+      "port": 9229,
+      "skipFiles": ["<node_internals>/**"]
+    }
+  ]
+}

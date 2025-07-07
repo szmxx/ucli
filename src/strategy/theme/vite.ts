@@ -1,9 +1,3 @@
-/*
- * @Author: cola
- * @Date: 2023-09-09 01:27:44
- * @LastEditors: cola
- * @Description:
- */
 import fs from "fs-extra";
 import { resolve } from "pathe";
 const utils = {

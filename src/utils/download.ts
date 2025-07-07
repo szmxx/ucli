@@ -1,9 +1,3 @@
-/*
- * @Author: cola
- * @Date: 2023-09-08 11:25:12
- * @LastEditors: cola
- * @Description:
- */
 import { downloadTemplate } from "giget";
 import ora from "ora";
 import chalk from "chalk";
@@ -13,9 +7,11 @@ import { TemplateMap } from "../config";
 import { TemplateType } from "../types";
 import { $ } from "execa";
 import { debug } from "./index";
+
 const spinner = ora({
-  text: "下载模版中",
-  spinner: "line",
+  text: chalk.cyan("🚀 正在下载模板..."),
+  spinner: "dots12",
+  color: "cyan",
 });
 
 function getRepoBranchName(conf: Record<string, unknown>) {
@@ -64,25 +60,52 @@ export async function download(
         {
           type: "confirm",
           name: "override",
-          message: "目录已存在，是否选择覆盖",
+          message: `${chalk.yellow("⚠️")} 目录 ${chalk.bold(
+            dirName
+          )} 已存在，是否覆盖?`,
+          default: false,
         },
       ]);
       if (res.override) {
         await fs.emptyDir(`./${dirName}`);
       }
     }
+    // 更新 spinner 文本显示当前模板
+    spinner.text = chalk.cyan(
+      `🚀 正在下载 ${chalk.bold(templateName)} 模板...`
+    );
     spinner.start();
+
     const themes = await makeProviders(conf);
+    const startTime = Date.now();
+
     const { dir } = await downloadTemplate(`themes:${templateName}`, {
       dir: dirName,
       providers: {
         themes,
       },
+      // 启用并发下载以提升速度
+      force: true,
+      offline: false,
     });
-    spinner.succeed(chalk.green("下载完成"));
+
+    const duration = ((Date.now() - startTime) / 1000).toFixed(1);
+    spinner.succeed(chalk.green(`✅ 模板下载完成! 耗时 ${duration}s`));
     return dir;
   } catch (error) {
-    debug((error as Error)?.message);
-    spinner.fail(chalk.red("下载失败"));
+    const errorMessage = (error as Error)?.message || "未知错误";
+    debug(errorMessage);
+
+    spinner.fail(chalk.red(`❌ 下载失败: ${errorMessage}`));
+
+    // 提供重试建议
+    console.log(chalk.yellow("💡 建议:"));
+    console.log(chalk.gray("  • 检查网络连接"));
+    console.log(chalk.gray("  • 稍后重试"));
+    console.log(chalk.gray("  • 确认模板名称是否正确"));
+
+    if (errorMessage.includes("timeout") || errorMessage.includes("network")) {
+      console.log(chalk.gray("  • 尝试使用代理或切换网络环境"));
+    }
   }
 }

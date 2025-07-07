@@ -16,18 +16,40 @@ Automatically install dependencies, initialize git, and create remote warehouses
 
 🚧 This project is under development. More features are coming soon!
 
-## Usage
-Install package:
+## Installation
+
 ```bash
-# npm
 npm install -g @szmxx/ucli
-
-# yarn
-yarn add -g @szmxx/ucli
-
-# pnpm
-pnpm install -g @szmxx/ucli
+# or
+pnpm add -g @szmxx/ucli
+# or
+yarn global add @szmxx/ucli
 ```
+
+### Shell Completions (Optional)
+
+For better command-line experience, you can install shell completions:
+
+```bash
+# Clone the repository or download completion scripts
+git clone https://github.com/szmxx/ucli.git
+cd ucli
+
+# Install completions
+./completions/install.sh
+
+# Restart your shell or reload configuration
+source ~/.bashrc  # for bash
+source ~/.zshrc   # for zsh
+```
+
+After installation, you can use TAB to auto-complete ucli commands:
+```bash
+ucli <TAB>        # Shows: create --help --version
+ucli create <TAB> # Shows: --help
+```
+
+## Usage
 
 Add authentication information
 ```bash

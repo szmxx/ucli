@@ -1,9 +1,3 @@
-/*
- * @Author: cola
- * @Date: 2023-09-08 15:56:52
- * @LastEditors: cola
- * @Description:
- */
 import { resolve } from "pathe";
 import fs from "fs-extra";
 import { init, initInstall, initCommitPush } from "../utils/init";
@@ -19,7 +13,6 @@ export default class Strategy {
   async vite(conf: Record<string, unknown>) {
     const packagePath = resolve(this.path, "./package.json");
     const pkg = await this.pkg(packagePath, conf);
-
     const features = (conf.features || []) as string[];
     if (!features?.includes?.("theme")) {
       ViteTheme(this.path);
