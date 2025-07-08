@@ -5,11 +5,11 @@ A unified scaffold tool
 [![npm downloads][downloads]][npm]
 [![Github Actions][build]](https://github.com/szmxx/ucli/actions/workflows/build.yml)
 
-- [Nuxt3 Template][nuxt3] \
+- [Nuxt3 Template][Nuxt3] \
 Optional support for themes and internationalization
-- [Vite Template][vite] \
+- [Vue3 Vite Template][Vue3] \
 Optional support for themes and internationalization
-- [Node Template][node] \
+- [Node Template][Node] \
 Koa frame，JWT etc
 - Automatically \
 Automatically install dependencies, initialize git, and create remote warehouses
@@ -72,9 +72,9 @@ Published under [MIT License](./LICENSE).
 
 
 <!-- Badges -->
-[nuxt3]: https://github.com/szmxx/template-nuxt3
-[vite]: https://github.com/szmxx/template-vite
-[node]: https://github.com/szmxx/template-node
+[Nuxt3]: https://github.com/szmxx/template-nuxt3
+[Vue3]: https://github.com/szmxx/template-vite
+[Node]: https://github.com/szmxx/template-node
 [version]: https://img.shields.io/npm/v/%40szmxx/ucli
 [downloads]: https://img.shields.io/npm/dm/%40szmxx/ucli
 [npm]: https://npmjs.com/package/@szmxx/ucli

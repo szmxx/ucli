@@ -1,125 +1,76 @@
-import type { Subject } from "rxjs";
-import { TemplateMap } from "../config";
-import chalk from "chalk";
-export default class Strategy {
-  vite(prompts: Subject<unknown>) {
-    const { components, features } = TemplateMap["vite"];
-    const defaults = features.filter((i) => i.default).map((i) => i.value);
+import { combineLatest, Subject } from "rxjs";
+import { getComponentChoices, getFeatureChoices } from "../config/prompts";
+import { CreateConfig } from "../inquirer/create";
+class PromptStrategy {
+  /**
+   * Vue3 模板的提示策略
+   */
+  _component(
+    template: string,
+    result: CreateConfig,
+    prompts: Subject<unknown>
+  ) {
+    const compchoices = getComponentChoices(template);
     prompts.next({
       type: "list",
       name: "component",
-      choices: [
-        {
-          name: `${chalk.gray("📦")} ${chalk.bold("empty")} - ${chalk.gray(
-            "无组件库，纯净模板"
-          )}`,
-          value: "empty",
-          short: "empty",
-        },
-        {
-          name: `${chalk.blue("🎨")} ${chalk.bold(
-            "element-plus"
-          )} - ${chalk.gray("Vue 3 桌面端组件库")}`,
-          value: "element-plus",
-          short: "element-plus",
-        },
-        {
-          name: `${chalk.green("📱")} ${chalk.bold("vant")} - ${chalk.gray(
-            "Vue 3 移动端组件库"
-          )}`,
-          value: "vant",
-          short: "vant",
-        },
-        {
-          name: `${chalk.magenta("🏗️")} ${chalk.bold("qiankun")} - ${chalk.gray(
-            "微前端解决方案"
-          )}`,
-          value: "qiankun",
-          short: "qiankun",
-        },
-      ],
-      message: `${chalk.cyan("🧩")} 请选择组件库:`,
-      pageSize: 6,
+      message: "请选择需要的组件库",
+      choices: compchoices,
     });
+    result["component"] = compchoices.find((item) => item.checked)?.name;
+  }
+  _feature(result: CreateConfig, prompts: Subject<unknown>) {
+    const featurechoices = getFeatureChoices();
     prompts.next({
       type: "checkbox",
       name: "features",
-      choices: [
-        {
-          name: `${chalk.yellow("🎨")} ${chalk.bold("主题")} - ${chalk.gray(
-            "支持深色/浅色主题切换"
-          )}`,
-          value: "theme",
-          checked: true,
-        },
-        {
-          name: `${chalk.blue("🌍")} ${chalk.bold("多语言")} - ${chalk.gray(
-            "国际化支持 (i18n)"
-          )}`,
-          value: "i18n",
-          checked: false,
-        },
-      ],
-      message: `${chalk.magenta("✨")} 请选择功能特性:`,
-      pageSize: 5,
+      message: "请选择需要的功能特性",
+      choices: featurechoices,
     });
+
+    result["features"] = featurechoices
+      .filter((item) => item.checked)
+      .map((item) => item.value);
   }
-  nuxt3(prompts: Subject<unknown>) {
-    const { components, features } = TemplateMap["nuxt3"];
-    const defaults = features.filter((i) => i.default).map((i) => i.value);
-    prompts.next({
-      type: "list",
-      name: "component",
-      choices: [
-        {
-          name: `${chalk.gray("📦")} ${chalk.bold("empty")} - ${chalk.gray(
-            "无组件库，纯净模板"
-          )}`,
-          value: "empty",
-          short: "empty",
-        },
-        {
-          name: `${chalk.blue("🎨")} ${chalk.bold(
-            "element-plus"
-          )} - ${chalk.gray("Vue 3 桌面端组件库")}`,
-          value: "element-plus",
-          short: "element-plus",
-        },
-        {
-          name: `${chalk.green("📱")} ${chalk.bold("vant")} - ${chalk.gray(
-            "Vue 3 移动端组件库"
-          )}`,
-          value: "vant",
-          short: "vant",
-        },
-      ],
-      message: `${chalk.cyan("🧩")} 请选择组件库:`,
-      pageSize: 5,
-    });
-    prompts.next({
-      type: "checkbox",
-      name: "features",
-      choices: [
-        {
-          name: `${chalk.yellow("🎨")} ${chalk.bold("主题")} - ${chalk.gray(
-            "支持深色/浅色主题切换"
-          )}`,
-          value: "theme",
-          checked: true,
-        },
-        {
-          name: `${chalk.blue("🌍")} ${chalk.bold("多语言")} - ${chalk.gray(
-            "国际化支持 (i18n)"
-          )}`,
-          value: "i18n",
-          checked: false,
-        },
-      ],
-      message: `${chalk.magenta("✨")} 请选择功能特性:`,
-      pageSize: 5,
-    });
+  async vue3(result: CreateConfig, prompts: Subject<unknown>) {
+    this._component("Vue3", result, prompts);
+    this._feature(result, prompts);
   }
-  node(prompts: Subject<unknown>) {
-    prompts.complete();
+
+  /**
+   * Nuxt3 模板的提示策略
+   */
+  async nuxt3(result: CreateConfig, prompts: Subject<unknown>) {
+    this._component("Nuxt3", result, prompts);
+    this._feature(result, prompts);
+  }
+
+  /**
+   * Node 模板的提示策略（无组件选择）
+   */
+  async node() {
+    // Node 模板通常不需要前端组件
+  }
+}
+
+const promptStrategyInstance = new PromptStrategy();
+
+/**
+ * 根据模板类型执行相应的提示策略
+ */
+export async function promptStrategy(
+  result: CreateConfig,
+  prompts: Subject<unknown>
+) {
+  const template = result["template"];
+  switch (template) {
+    case "Vue3":
+      promptStrategyInstance.vue3(result, prompts);
+    case "Nuxt3":
+      promptStrategyInstance.nuxt3(result, prompts);
+    case "Node":
+      promptStrategyInstance.node();
+    default:
+      prompts.complete();
   }
 }

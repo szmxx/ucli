@@ -4,8 +4,12 @@ import { defineCommand, runMain } from "citty";
 import { config } from "dotenv";
 import { name, version, description } from "../package.json";
 
-// 加载 .env 文件
+// 加载 .env 文件（静默模式）
+// 临时禁用 console.log 来阻止 dotenv 输出
+const originalLog = console.log;
+console.log = () => {};
 config();
+console.log = originalLog;
 
 function start() {
   try {

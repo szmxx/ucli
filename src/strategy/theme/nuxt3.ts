@@ -1,63 +1,56 @@
-import fs from "fs-extra";
-import { resolve } from "pathe";
-const utils = {
-  "./style/theme/dark.scss": async (path: string) => {
-    await fs.remove(path);
-  },
-  "./components/DarkToggle.vue": async (path: string) => {
-    await fs.remove(path);
-  },
-  "./style/theme/element/dark.scss": async (path: string) => {
-    const bool = fs.pathExistsSync(path);
-    if (bool) await fs.remove(path);
-  },
-  "./style/theme/index.scss": async (path: string) => {
-    let res = await fs.readFile(path, "utf-8");
-    // @use "./dark.scss";
-    res = res.replace("@use './dark.scss';", "");
-    fs.writeFile(path, res);
-  },
-  "./style/theme/element/index.scss": async (path: string) => {
-    const bool = fs.pathExistsSync(path);
-    if (bool) {
-      let res = await fs.readFile(path, "utf-8");
-      // @use "./dark.scss";
-      res = res?.replace("@use './dark.scss';", "");
-      fs.writeFile(path, res);
-    }
-  },
-  "./components/Footer.vue": async (path: string) => {
-    let res = await fs.readFile(path, "utf-8");
-    // <DarkToggle />
-    res = res.replace("<DarkToggle />", "");
-    fs.writeFile(path, res);
-  },
-  "./nuxt.config.ts": async (path: string) => {
-    let res = await fs.readFile(path, "utf-8");
-    // @nuxtjs/color-mode
-    res = res.replace("'@nuxtjs/color-mode',", "");
-    res = res.replace(
-      `colorMode: {
+import BaseTheme from "./base";
+
+/**
+ * Nuxt3 主题处理类
+ */
+class Nuxt3Theme extends BaseTheme {
+  async removeTheme(): Promise<void> {
+    const operations = [
+      // 删除主题相关文件
+      () => this.removeFile("./style/theme/dark.scss"),
+      () => this.removeFile("./components/DarkToggle.vue"),
+      () => this.safeRemoveFile("./style/theme/element/dark.scss"),
+
+      // 更新样式文件
+      () =>
+        this.replaceInFile(
+          "./style/theme/index.scss",
+          "@use './dark.scss';",
+          ""
+        ),
+      () =>
+        this.safeReplaceInFile(
+          "./style/theme/element/index.scss",
+          "@use './dark.scss';",
+          ""
+        ),
+
+      // 更新组件文件
+      () => this.replaceInFile("./components/Footer.vue", "<DarkToggle />", ""),
+
+      // 更新 Nuxt 配置
+      () => this.replaceInFile("./nuxt.config.ts", "'@nuxtjs/color-mode',", ""),
+      () =>
+        this.replaceInFile(
+          "./nuxt.config.ts",
+          `colorMode: {
     classSuffix: '',
   },`,
-      ""
-    );
-    fs.writeFile(path, res);
-  },
-  "./package.json": async (path: string) => {
-    const data = await fs.readFileSync(path, {
-      encoding: "utf-8",
-    });
-    const packageJSON = JSON.parse(data);
-    // @nuxtjs/color-mode
-    delete packageJSON.devDependencies["@nuxtjs/color-mode"];
-    fs.writeFile(path, JSON.stringify(packageJSON, null, 2));
-  },
-};
+          ""
+        ),
+
+      // 更新 package.json
+      () =>
+        this.updatePackageJson("./package.json", (pkg) => {
+          delete pkg.devDependencies?.["@nuxtjs/color-mode"];
+        }),
+    ];
+
+    await this.executeOperations(operations);
+  }
+}
 
 export default async function theme(base: string) {
-  for (const [path, cb] of Object.entries(utils)) {
-    const _path = resolve(base, path);
-    await cb(_path);
-  }
+  const nuxt3Theme = new Nuxt3Theme(base);
+  await nuxt3Theme.removeTheme();
 }

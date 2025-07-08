@@ -1,72 +1,30 @@
-import { resolve } from "pathe";
-import fs from "fs-extra";
-import { init, initInstall, initCommitPush } from "../utils/init";
-import ViteTheme from "./theme/vite";
+import BaseStrategy from "./base";
+import VueTheme from "./theme/vue3";
 import NuxtTheme from "./theme/nuxt3";
-export default class Strategy {
-  path: string;
-  name: string;
-  constructor(name: string, path: string) {
-    this.path = path;
-    this.name = name;
-  }
-  async vite(conf: Record<string, unknown>) {
-    const packagePath = resolve(this.path, "./package.json");
-    const pkg = await this.pkg(packagePath, conf);
-    const features = (conf.features || []) as string[];
-    if (!features?.includes?.("theme")) {
-      ViteTheme(this.path);
-    }
-    // 创建远程仓库，初始化 git
-    const sshUrl = await init(pkg);
-    // 重新写入
-    fs.writeFileSync(packagePath, JSON.stringify(pkg, null, 2));
+import type { CreateConfig } from "../inquirer/create";
 
-    await initInstall(pkg.name);
-    if (sshUrl) await initCommitPush(pkg.name);
-  }
-  async nuxt3(conf: Record<string, unknown>) {
-    const packagePath = resolve(this.path, "./package.json");
-    const pkg = await this.pkg(packagePath, conf);
-
-    const features = (conf.features || []) as string[];
-    if (!features?.includes?.("theme")) {
-      NuxtTheme(this.path);
-    }
-    // 创建远程仓库，初始化 git
-    const sshUrl = await init(pkg);
-    // 重新写入
-    fs.writeFileSync(packagePath, JSON.stringify(pkg, null, 2));
-
-    await initInstall(pkg.name);
-    if (sshUrl) await initCommitPush(pkg.name);
+/**
+ * 项目策略类，继承基础策略类
+ */
+export default class Strategy extends BaseStrategy {
+  /**
+   * Vue3 项目初始化
+   */
+  async Vue3(conf: CreateConfig) {
+    await this.executeStrategy(conf, VueTheme);
   }
 
-  async node(conf: Record<string, unknown>) {
-    const packagePath = resolve(this.path, "./package.json");
-    const pkg = await this.pkg(packagePath, conf);
-
-    // 创建远程仓库，初始化 git
-    const sshUrl = await init(pkg);
-    // 重新写入
-    fs.writeFileSync(packagePath, JSON.stringify(pkg, null, 2));
-
-    await initInstall(pkg.name);
-    if (sshUrl) await initCommitPush(pkg.name);
+  /**
+   * Nuxt3 项目初始化
+   */
+  async Nuxt3(conf: CreateConfig) {
+    await this.executeStrategy(conf, NuxtTheme);
   }
 
-  async pkg(packagePath: string, conf: Record<string, unknown>) {
-    const { isPrivate, description, license } = conf;
-    const data = await fs.readFileSync(packagePath, {
-      encoding: "utf-8",
-    });
-    const packageJSON = JSON.parse(data);
-    packageJSON.name = this.name;
-    if (typeof license === "string")
-      packageJSON.license = license?.toUpperCase?.();
-    if (description) packageJSON.description = description;
-    packageJSON.private = isPrivate;
-
-    return packageJSON;
+  /**
+   * Node 项目初始化
+   */
+  async Node(conf: CreateConfig) {
+    await this.executeStrategy(conf);
   }
 }

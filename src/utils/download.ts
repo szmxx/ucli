@@ -3,59 +3,50 @@ import ora from "ora";
 import chalk from "chalk";
 import inquirer from "inquirer";
 import fs from "fs-extra";
-import { TemplateMap } from "../config";
-import { TemplateType } from "../types";
 import { $ } from "execa";
 import { debug } from "./index";
+import { getTemplateInfo, getDefaultDir } from "./template";
+import { DOWNLOAD_CONFIG, MESSAGES, GIT_CONFIG_KEY } from "../constants";
+import type { CreateConfig } from "../inquirer/create";
 
 const spinner = ora({
-  text: chalk.cyan("🚀 正在下载模板..."),
-  spinner: "dots12",
-  color: "cyan",
+  text: chalk.cyan(DOWNLOAD_CONFIG.spinner.text),
+  spinner: DOWNLOAD_CONFIG.spinner.type,
+  color: DOWNLOAD_CONFIG.spinner.color,
 });
 
-function getRepoBranchName(conf: Record<string, unknown>) {
-  const features = (conf.features || []) as string[];
-  const component = (
-    conf.component !== "empty" ? conf.component : ""
-  ) as string;
-  let refName = "main";
-  if (features.includes("i18n")) {
-    refName = component ? `${component}-i18n` : "i18n";
-  } else {
-    if (component) {
-      refName = component;
-    }
-  }
-  return refName;
-}
+/**
+ * 创建模板提供者函数
+ * @param conf 配置对象
+ * @returns 提供者函数
+ */
+async function makeProviders(conf: CreateConfig) {
+  const auth = await $`git config --global ${GIT_CONFIG_KEY}`;
 
-async function makeProviders(conf: Record<string, unknown>) {
-  const refName = getRepoBranchName(conf);
-  const auth = await $`git config --global ucli.auth`;
   return (input: string) => {
-    const { name, tar } = TemplateMap?.[input as TemplateType];
+    const { name, tar } = getTemplateInfo(input, conf);
     return {
-      name: name,
+      name,
       headers: { authorization: auth?.stdout?.toString() },
-      tar: tar + refName,
+      tar,
     };
   };
 }
 
-export async function download(
-  repoName: string,
-  conf: Record<string, unknown>
-) {
+/**
+ * 下载模板
+ * @param repoName 项目名称
+ * @param conf 配置对象
+ * @returns 下载的目录路径
+ */
+export async function download(repoName: string, conf: CreateConfig) {
   try {
     const templateName = conf?.template as string;
-    const { defaultDir = "" } = TemplateMap?.[templateName as TemplateType];
+    const dirName = repoName || getDefaultDir(templateName);
 
-    const dirName = repoName || defaultDir;
-
-    // 强制覆盖
-    const bool = fs.pathExistsSync(`./${dirName}`);
-    if (bool) {
+    // 检查目录是否存在
+    const directoryExists = fs.pathExistsSync(`./${dirName}`);
+    if (directoryExists) {
       const res = await inquirer.prompt([
         {
           type: "confirm",
@@ -70,6 +61,7 @@ export async function download(
         await fs.emptyDir(`./${dirName}`);
       }
     }
+
     // 更新 spinner 文本显示当前模板
     spinner.text = chalk.cyan(
       `🚀 正在下载 ${chalk.bold(templateName)} 模板...`
@@ -84,28 +76,32 @@ export async function download(
       providers: {
         themes,
       },
-      // 启用并发下载以提升速度
       force: true,
       offline: false,
     });
 
     const duration = ((Date.now() - startTime) / 1000).toFixed(1);
-    spinner.succeed(chalk.green(`✅ 模板下载完成! 耗时 ${duration}s`));
+    spinner.succeed(
+      chalk.green(`${MESSAGES.success.download} 耗时 ${duration}s`)
+    );
     return dir;
   } catch (error) {
     const errorMessage = (error as Error)?.message || "未知错误";
     debug(errorMessage);
 
-    spinner.fail(chalk.red(`❌ 下载失败: ${errorMessage}`));
+    spinner.fail(chalk.red(`${MESSAGES.error.download} ${errorMessage}`));
 
     // 提供重试建议
-    console.log(chalk.yellow("💡 建议:"));
-    console.log(chalk.gray("  • 检查网络连接"));
-    console.log(chalk.gray("  • 稍后重试"));
-    console.log(chalk.gray("  • 确认模板名称是否正确"));
+    console.log(chalk.yellow(MESSAGES.tips.retry));
+    console.log(chalk.gray(MESSAGES.tips.network));
+    console.log(chalk.gray(MESSAGES.tips.retryLater));
+    console.log(chalk.gray(MESSAGES.tips.checkTemplate));
 
     if (errorMessage.includes("timeout") || errorMessage.includes("network")) {
-      console.log(chalk.gray("  • 尝试使用代理或切换网络环境"));
+      console.log(chalk.gray(MESSAGES.tips.useProxy));
     }
+
+    // 抛出错误以中断后续流程
+    throw error;
   }
 }

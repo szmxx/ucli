@@ -1,26 +1,64 @@
-import Strategy from "../strategy/prompt";
 import inquirer from "inquirer";
-import { TemplateList, TemplateMap, LicenseList } from "../config";
-import { Subject } from "rxjs";
 import chalk from "chalk";
-const strategy = new Strategy();
-export async function create() {
-  return new Promise<Record<string, unknown>>((resolve) => {
-    const prompts = new Subject();
-    const result: Record<string, unknown> = {};
+import { getTemplateChoices, getLicenseChoices } from "../config/prompts";
+import { promptStrategy } from "../strategy/prompt";
+import { Subject } from "rxjs";
+
+// UI 样式配置
+const UI_STYLES = {
+  icons: {
+    target: "🎯",
+    lock: "🔒",
+    edit: "📝",
+    balance: "⚖️",
+    sparkles: "✨",
+    wrench: "🔧",
+    gear: "⚙️",
+  },
+  colors: {
+    cyan: chalk.cyan,
+    blue: chalk.blue,
+    yellow: chalk.yellow,
+    green: chalk.green,
+    red: chalk.red,
+    gray: chalk.gray,
+    bold: chalk.bold,
+  },
+};
+
+export interface CreateConfig {
+  template?: string;
+  name?: string;
+  description?: string;
+  license?: string;
+  private?: boolean;
+  component?: string;
+  features?: string[];
+}
+
+export async function create(name: string): Promise<CreateConfig> {
+  const prompts = new Subject();
+  const result: CreateConfig = {};
+  return new Promise((resolve) => {
     inquirer
       .prompt(prompts as any)
       .ui.process.subscribe((res: Record<string, string>) => {
-        result[res.name] = res.answer;
+        (result as Record<string, unknown>)[res.name] = res.answer;
         switch (res.name) {
           case "template":
-            handleTemp(prompts, result);
+            initPresets(prompts);
             break;
           case "preset":
             if (res.answer === "manual") {
-              strategy?.[result["template"] as keyof Strategy]?.(prompts);
+              promptStrategy(result, prompts);
             } else {
-              handleDefaultPreset(prompts, result);
+              prompts.complete();
+              resolve(result);
+            }
+            break;
+          case "license":
+            if (result.template === "Node") {
+              prompts.complete();
               resolve(result);
             }
             break;
@@ -28,158 +66,80 @@ export async function create() {
             prompts.complete();
             resolve(result);
             break;
-          case "license":
-            if (result["template"] === "node") resolve(result);
-            break;
         }
       });
 
-    prompts.next({
-      type: "list",
-      name: "template",
-      choices: [
-        {
-          name: `${chalk.cyan("⚡")} ${chalk.bold("vite")} - ${chalk.gray(
-            "现代前端开发框架，快速热重载"
-          )}`,
-          value: "vite",
-          short: "vite",
-        },
-        {
-          name: `${chalk.green("🚀")} ${chalk.bold("nuxt3")} - ${chalk.gray(
-            "Vue.js 全栈框架，SSR/SSG 支持"
-          )}`,
-          value: "nuxt3",
-          short: "nuxt3",
-        },
-        {
-          name: `${chalk.yellow("📦")} ${chalk.bold("node")} - ${chalk.gray(
-            "Node.js 后端服务框架"
-          )}`,
-          value: "node",
-          short: "node",
-        },
-      ],
-      message: `${chalk.magenta("🎯")} 请选择一个模版:`,
-      pageSize: 10,
-    });
-    prompts.next({
-      type: "confirm",
-      name: "isPrivate",
-      message: `${chalk.blue("🔒")} 是否设置为私有项目?`,
-      default: false,
-    });
-    prompts.next({
-      type: "input",
-      name: "description",
-      message: `${chalk.cyan("📝")} 请输入项目描述:`,
-      default: "一个基于模板创建的项目",
-    });
-
-    prompts.next({
-      type: "list",
-      name: "license",
-      choices: [
-        {
-          name: `${chalk.green("📄")} ${chalk.bold("MIT")} - ${chalk.gray(
-            "最宽松的开源协议，允许商业使用"
-          )}`,
-          value: "mit",
-          short: "MIT",
-        },
-        {
-          name: `${chalk.blue("📋")} ${chalk.bold("Apache 2.0")} - ${chalk.gray(
-            "企业友好，包含专利授权"
-          )}`,
-          value: "apache-2.0",
-          short: "Apache 2.0",
-        },
-        {
-          name: `${chalk.yellow("📜")} ${chalk.bold("GPL 3.0")} - ${chalk.gray(
-            "强制开源，病毒式传播"
-          )}`,
-          value: "gpl-3.0",
-          short: "GPL 3.0",
-        },
-        {
-          name: `${chalk.cyan("📃")} ${chalk.bold("LGPL 3.0")} - ${chalk.gray(
-            "库友好的 GPL 变体"
-          )}`,
-          value: "lgpl-3.0",
-          short: "LGPL 3.0",
-        },
-        {
-          name: `${chalk.magenta("📑")} ${chalk.bold(
-            "BSD 4-Clause"
-          )} - ${chalk.gray("经典的 BSD 许可证")}`,
-          value: "bsd-4-clause",
-          short: "BSD 4-Clause",
-        },
-        {
-          name: `${chalk.red("📄")} ${chalk.bold("MPL 2.0")} - ${chalk.gray(
-            "Mozilla 公共许可证"
-          )}`,
-          value: "mpl-2.0",
-          short: "MPL 2.0",
-        },
-        {
-          name: `${chalk.green("📝")} ${chalk.bold(
-            "CC BY-SA 4.0"
-          )} - ${chalk.gray("知识共享署名-相同方式共享")}`,
-          value: "cc-by-sa-4.0",
-          short: "CC BY-SA 4.0",
-        },
-      ],
-      message: `${chalk.yellow("⚖️")} 请选择开源协议:`,
-      pageSize: 8,
-    });
+    initQuestionList(prompts, name);
   });
 }
 
-function handleDefaultPreset(
-  prompts: Subject<unknown>,
-  result: Record<string, unknown>
-) {
-  const features = TemplateMap[
-    result["template"] as keyof typeof TemplateMap
-  ].features
-    .filter((i) => i.default)
-    .map((i) => i.value);
-  result["features"] = features;
-  prompts.complete();
+function initQuestionList(prompts: Subject<unknown>, name: string) {
+  const templateChoices = getTemplateChoices();
+
+  const questions = [
+    {
+      type: "list",
+      name: "template",
+      message: `${UI_STYLES.colors.cyan(
+        UI_STYLES.icons.target
+      )} 请选择项目模板:`,
+      choices: templateChoices,
+    },
+    {
+      type: "confirm",
+      name: "private",
+      message: `${UI_STYLES.colors.blue(
+        UI_STYLES.icons.lock
+      )} 是否设置为私有项目?`,
+      default: false,
+    },
+    {
+      type: "input",
+      name: "description",
+      message: `${UI_STYLES.colors.cyan(UI_STYLES.icons.edit)} 请输入项目描述:`,
+      default: `A ${name || "Template"} project`,
+    },
+    {
+      type: "list",
+      name: "license",
+      message: `${UI_STYLES.colors.yellow(
+        UI_STYLES.icons.balance
+      )} 请选择开源协议:`,
+      choices: getLicenseChoices(),
+      default: "MIT",
+    },
+  ];
+
+  questions.map((question) => {
+    prompts.next(question);
+  });
 }
 
-function handleTemp(
-  prompts: Subject<unknown>,
-  result: Record<string, unknown>
-) {
-  const features = TemplateMap[
-    result["template"] as keyof typeof TemplateMap
-  ].features
-    .filter((i) => i.default)
-    .map((i) => i.name);
-
-  if (features?.length) {
-    prompts?.next({
-      type: "list",
-      name: "preset",
-      choices: [
-        {
-          name: `${chalk.green("✨")} ${chalk.bold("默认配置")} ${chalk.gray(
-            `（${features.join("、")}）`
-          )}`,
-          value: "default",
-          short: "默认配置",
-        },
-        {
-          name: `${chalk.blue("🔧")} ${chalk.bold("自定义配置")} ${chalk.gray(
-            "- 手动选择功能"
-          )}`,
-          value: "manual",
-          short: "自定义配置",
-        },
-      ],
-      message: `${chalk.cyan("⚙️")} 请选择配置方式:`,
-    });
-  }
+function initPresets(prompts: Subject<unknown>) {
+  prompts.next({
+    type: "list",
+    name: "preset",
+    message: `${UI_STYLES.colors.cyan(UI_STYLES.icons.gear)} 请选择配置方式:`,
+    choices: [
+      {
+        name: `${UI_STYLES.colors.green(
+          UI_STYLES.icons.sparkles
+        )} ${UI_STYLES.colors.bold("默认配置")} ${UI_STYLES.colors.gray(
+          "(推荐) 使用预设的最佳实践配置"
+        )}`,
+        value: "default",
+        short: "默认配置",
+      },
+      {
+        name: `${UI_STYLES.colors.blue(
+          UI_STYLES.icons.wrench
+        )} ${UI_STYLES.colors.bold("自定义配置")} ${UI_STYLES.colors.gray(
+          "手动选择组件和功能"
+        )}`,
+        value: "manual",
+        short: "自定义配置",
+      },
+    ],
+    default: "default",
+  });
 }

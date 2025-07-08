@@ -4,9 +4,11 @@ import ora from "ora";
 import chalk from "chalk";
 import { createRepo } from "../api/github";
 import { debug } from "./index";
+import { DOWNLOAD_CONFIG, MESSAGES } from "../constants";
 const spinner = ora({
-  text: "",
-  spinner: "line",
+  text: chalk.cyan("🚀 正在初始化项目..."),
+  spinner: DOWNLOAD_CONFIG.spinner.type,
+  color: DOWNLOAD_CONFIG.spinner.color,
 });
 
 export async function init(pkg: Record<string, string>) {
@@ -15,7 +17,7 @@ export async function init(pkg: Record<string, string>) {
     sshUrl = await initREPO(pkg);
   } catch (error) {
     // 如果创建远程仓库失败，继续执行本地 git 初始化
-    console.log(chalk.yellow("⚠️ 远程仓库创建失败，将继续进行本地初始化"));
+    console.log(chalk.yellow(MESSAGES.warning.repoCreateSkipped));
   }
   await initGIT(pkg.name, sshUrl || "");
   return sshUrl;
@@ -31,14 +33,10 @@ export async function initREPO(pkg: Record<string, unknown>) {
       auth?.stdout?.toString?.()?.trim() || process.env.GITHUB_TOKEN;
 
     if (!token) {
-      console.log(
-        chalk.yellow("💡 提示: 未配置 GitHub Token，跳过远程仓库创建")
-      );
-      console.log(chalk.gray("   可通过以下方式配置:"));
-      console.log(
-        chalk.gray("   • git config --global ucli.auth 'your_token'")
-      );
-      console.log(chalk.gray("   • export GITHUB_TOKEN='your_token'"));
+      console.log(chalk.yellow(MESSAGES.tips.tokenConfig));
+    console.log(chalk.gray(MESSAGES.tips.tokenConfigMethods));
+    console.log(chalk.gray(MESSAGES.tips.tokenConfigGit));
+    console.log(chalk.gray(MESSAGES.tips.tokenConfigEnv));
       throw new Error("未配置授权信息");
     }
 
@@ -68,28 +66,28 @@ export async function initREPO(pkg: Record<string, unknown>) {
     if (typeof pkg.bugs === "object" && pkg.bugs && "url" in pkg.bugs)
       pkg.bugs.url = `${html_url}/issues`;
     if (ssh_url) {
-      spinner.succeed(chalk.green("✅ 创建远程仓库成功"));
+      spinner.succeed(chalk.green(MESSAGES.success.repoCreated));
       return ssh_url;
     } else {
       if (message === "Bad credentials") {
-        spinner.fail(chalk.red("❌ 授权失败"));
-        console.log(chalk.yellow("💡 建议:"));
-        console.log(chalk.gray("   • 检查 GitHub Token 是否有效"));
-        console.log(chalk.gray("   • 确认 Token 具有 repo 权限"));
-        console.log(chalk.gray("   • 重新生成并配置新的 Token"));
+        spinner.fail(chalk.red(MESSAGES.error.authFailed));
+      console.log(chalk.yellow(MESSAGES.tips.retry));
+      console.log(chalk.gray(MESSAGES.tips.checkToken));
+      console.log(chalk.gray(MESSAGES.tips.checkPermission));
+      console.log(chalk.gray(MESSAGES.tips.regenerateToken));
         throw new Error("授权失败，请检查权限");
       }
       if (message?.includes("name already exists")) {
-        spinner.fail(chalk.red("❌ 仓库名称已存在"));
-        console.log(chalk.yellow("💡 建议: 尝试使用不同的项目名称"));
+        spinner.fail(chalk.red(MESSAGES.error.repoExists));
+      console.log(chalk.yellow(MESSAGES.tips.tryDifferentName));
         throw new Error("仓库名称已存在");
       }
-      spinner.fail(chalk.red("❌ 创建远程仓库失败"));
+      spinner.fail(chalk.red(MESSAGES.error.repoCreateFailed));
       throw new Error(`创建失败: ${message || "未知错误"}`);
     }
   } catch (error) {
     if (spinner.isSpinning) {
-      spinner.fail(chalk.red("❌ 创建远程仓库失败"));
+      spinner.fail(chalk.red(MESSAGES.error.repoCreateFailed));
     }
     debug(error);
     throw error;
@@ -109,12 +107,12 @@ export async function initGIT(name: string, sshURL: string) {
     if (sshURL) {
       // 初始化远程仓库
       await $`git remote add origin ${sshURL}`;
-      spinner.succeed(chalk.green("✅ Git 初始化完成（已关联远程仓库）"));
+      spinner.succeed(chalk.green(MESSAGES.success.gitInit));
     } else {
-      spinner.succeed(chalk.green("✅ Git 初始化完成（仅本地仓库）"));
+      spinner.succeed(chalk.green(MESSAGES.success.gitInitLocal));
     }
   } catch (error) {
-    spinner.fail(chalk.red("❌ Git 初始化失败"));
+    spinner.fail(chalk.red(MESSAGES.error.gitInitFailed));
     debug(error);
     throw error;
   } finally {
@@ -127,12 +125,12 @@ export async function initInstall(name: string) {
     spinner.start();
     chdir(`./${name}`);
     await $`pnpm install`;
-    spinner.succeed(chalk.green("✅ 依赖安装完成"));
+    spinner.succeed(chalk.green(MESSAGES.success.depsInstalled));
   } catch (error) {
-    spinner.fail(chalk.red("❌ 依赖安装失败"));
-    console.log(chalk.yellow("💡 建议:"));
-    console.log(chalk.gray("   • 检查网络连接"));
-    console.log(chalk.gray("   • 尝试使用 npm install 或 yarn install"));
+    spinner.fail(chalk.red(MESSAGES.error.depsInstallFailed));
+    console.log(chalk.yellow(MESSAGES.tips.retry));
+    console.log(chalk.gray(MESSAGES.tips.network));
+    console.log(chalk.gray(MESSAGES.tips.manualInstall));
     debug(error);
     throw error;
   } finally {
@@ -145,7 +143,7 @@ export async function initCommitPush(name: string) {
     chdir(`./${name}`);
     const remotes = await $`git remote`.catch(() => ({ stdout: "" }));
     if (!remotes.stdout.toString().trim()) {
-      console.log(chalk.yellow("⚠️ 未配置远程仓库，跳过推送步骤"));
+      console.log(chalk.yellow(MESSAGES.warning.noToken));
       return;
     }
 
@@ -162,13 +160,13 @@ export async function initCommitPush(name: string) {
     });
     // Git推送到远程仓库
     await $`git push origin main`;
-    spinner.succeed(chalk.green("✅ 代码已提交并推送到远程仓库"));
+    spinner.succeed(chalk.green(MESSAGES.success.codePushed));
   } catch (error) {
-    spinner.fail(chalk.red("❌ 提交推送失败"));
-    console.log(chalk.yellow("💡 建议:"));
-    console.log(chalk.gray("   • 检查网络连接"));
-    console.log(chalk.gray("   • 确认远程仓库访问权限"));
-    console.log(chalk.gray("   • 稍后可手动执行: git push origin main"));
+    spinner.fail(chalk.red(MESSAGES.error.pushFailed));
+    console.log(chalk.yellow(MESSAGES.tips.retry));
+    console.log(chalk.gray(MESSAGES.tips.network));
+    console.log(chalk.gray(MESSAGES.tips.checkRepoAccess));
+    console.log(chalk.gray(MESSAGES.tips.manualPush));
     debug(error);
     // 不抛出错误，允许项目创建继续完成
   } finally {
