@@ -1,6 +1,22 @@
 # Changelog
 
 
+## v0.0.7
+
+[compare changes](https://github.com/szmxx/ucli/compare/v0.0.6...v0.0.7)
+
+### 🚀 Enhancements
+
+- 添加环境配置和调试支持 ([d22f994](https://github.com/szmxx/ucli/commit/d22f994))
+
+### 💅 Refactors
+
+- **config:** 重构模板配置管理 ([8ea5b32](https://github.com/szmxx/ucli/commit/8ea5b32))
+
+### ❤️ Contributors
+
+- Cola <szmintel@gmail.com>
+
 ## v0.0.6
 
 [compare changes](https://github.com/szmxx/ucli/compare/v0.0.5...v0.0.6)
