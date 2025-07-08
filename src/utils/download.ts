@@ -21,13 +21,17 @@ const spinner = ora({
  * @returns 提供者函数
  */
 async function makeProviders(conf: CreateConfig) {
-  const auth = await $`git config --global ${GIT_CONFIG_KEY}`;
+  const auth = await $`git config --global ${GIT_CONFIG_KEY}`.catch(() => ({
+    stdout: "",
+  }));
+
+  const token = auth?.stdout?.toString?.()?.trim() || process.env.GITHUB_TOKEN;
 
   return (input: string) => {
     const { name, tar } = getTemplateInfo(input, conf);
     return {
       name,
-      headers: { authorization: auth?.stdout?.toString() },
+      headers: { authorization: token },
       tar,
     };
   };

@@ -14,7 +14,13 @@ const spinner = ora({
 export async function init(pkg: Record<string, string>) {
   let sshUrl = "";
   try {
-    sshUrl = await initREPO(pkg);
+    const result = await initREPO(pkg);
+    if (result === null) {
+      // 未配置 token，跳过远程仓库创建
+      sshUrl = "";
+    } else {
+      sshUrl = result;
+    }
   } catch (error) {
     // 如果创建远程仓库失败，继续执行本地 git 初始化
     console.log(chalk.yellow(MESSAGES.warning.repoCreateSkipped));
@@ -26,18 +32,17 @@ export async function init(pkg: Record<string, string>) {
 export async function initREPO(pkg: Record<string, unknown>) {
   try {
     // 检查授权配置
-    const auth = await $`git config --global ucli.auth`.catch(() => ({
+    const auth = await $`git config --global ucli.github`.catch(() => ({
       stdout: "",
     }));
     const token =
       auth?.stdout?.toString?.()?.trim() || process.env.GITHUB_TOKEN;
-
     if (!token) {
       console.log(chalk.yellow(MESSAGES.tips.tokenConfig));
-    console.log(chalk.gray(MESSAGES.tips.tokenConfigMethods));
-    console.log(chalk.gray(MESSAGES.tips.tokenConfigGit));
-    console.log(chalk.gray(MESSAGES.tips.tokenConfigEnv));
-      throw new Error("未配置授权信息");
+      console.log(chalk.gray(MESSAGES.tips.tokenConfigMethods));
+      console.log(chalk.gray(MESSAGES.tips.tokenConfigGit));
+      console.log(chalk.gray(MESSAGES.tips.tokenConfigEnv));
+      return null; // 返回 null 而不是抛出错误
     }
 
     spinner.text = "创建远程仓库";
@@ -71,15 +76,15 @@ export async function initREPO(pkg: Record<string, unknown>) {
     } else {
       if (message === "Bad credentials") {
         spinner.fail(chalk.red(MESSAGES.error.authFailed));
-      console.log(chalk.yellow(MESSAGES.tips.retry));
-      console.log(chalk.gray(MESSAGES.tips.checkToken));
-      console.log(chalk.gray(MESSAGES.tips.checkPermission));
-      console.log(chalk.gray(MESSAGES.tips.regenerateToken));
+        console.log(chalk.yellow(MESSAGES.tips.retry));
+        console.log(chalk.gray(MESSAGES.tips.checkToken));
+        console.log(chalk.gray(MESSAGES.tips.checkPermission));
+        console.log(chalk.gray(MESSAGES.tips.regenerateToken));
         throw new Error("授权失败，请检查权限");
       }
       if (message?.includes("name already exists")) {
         spinner.fail(chalk.red(MESSAGES.error.repoExists));
-      console.log(chalk.yellow(MESSAGES.tips.tryDifferentName));
+        console.log(chalk.yellow(MESSAGES.tips.tryDifferentName));
         throw new Error("仓库名称已存在");
       }
       spinner.fail(chalk.red(MESSAGES.error.repoCreateFailed));

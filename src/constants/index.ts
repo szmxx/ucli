@@ -144,7 +144,7 @@ export const MESSAGES = {
     useProxy: "  • 尝试使用代理或切换网络环境",
     tokenConfig: "💡 提示: 未配置 GitHub Token，跳过远程仓库创建",
     tokenConfigMethods: "   可通过以下方式配置:",
-    tokenConfigGit: '   • git config --global ucli.auth "your_token"',
+    tokenConfigGit: '   • git config --global ucli.github "your_token"',
     tokenConfigEnv: '   • export GITHUB_TOKEN="your_token"',
     checkToken: "   • 检查 GitHub Token 是否有效",
     checkPermission: "   • 确认 Token 具有 repo 权限",
@@ -160,7 +160,7 @@ export const MESSAGES = {
 export const PROJECT_NAME_REGEX = /^[a-zA-Z0-9_-]+$/;
 
 // Git 配置键名
-export const GIT_CONFIG_KEY = "ucli.auth";
+export const GIT_CONFIG_KEY = "ucli.github";
 
 // 开源协议配置
 export const LICENSE_CONFIG = {

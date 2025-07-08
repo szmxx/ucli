@@ -35,26 +35,22 @@ For better command-line experience, you can install shell completions:
 git clone https://github.com/szmxx/ucli.git
 cd ucli
 
-# Install completions
-./completions/install.sh
-
-# Restart your shell or reload configuration
-source ~/.bashrc  # for bash
-source ~/.zshrc   # for zsh
-```
-
-After installation, you can use TAB to auto-complete ucli commands:
-```bash
-ucli <TAB>        # Shows: create --help --version
-ucli create <TAB> # Shows: --help
-```
-
 ## Usage
 
 Add authentication information
 ```bash
-git config --global ucli.auth <github_auth>
+# https://github.com/settings/personal-access-tokens
+# 1. Generate a new token with the "repo" scope (read and write repository permissions)
+# 2. Copy the token to your clipboard
+# 3. Configure the token
+git config --global ucli.github <github_person_token>
 ```
+
+**Note:** The GitHub token requires **read and write repository permissions** to:
+- Create new repositories
+- Initialize repository settings
+- Push initial commits
+- Set up repository configurations
 
 Create a new project
 ```bash
