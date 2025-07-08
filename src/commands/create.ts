@@ -3,6 +3,7 @@ import { consola } from "consola";
 import { create } from "../inquirer/create";
 import { download } from "../utils/download";
 import Strategy from "../strategy/core";
+import { cleanupRemoteRepo } from "../utils/init";
 import { PROJECT_NAME_REGEX, MESSAGES } from "../constants";
 
 /**
@@ -52,12 +53,21 @@ export default defineCommand({
     }
 
     // 执行创建流程
-    const conf = await create(projectName);
-    const path = await download(projectName, conf);
-    if (path && conf?.template) {
-      const strategy = new Strategy(projectName, path);
-      // @ts-ignore - 动态调用模板方法
-      await strategy?.[conf.template]?.(conf);
+    try {
+      const conf = await create(projectName);
+      const path = await download(projectName, conf);
+      if (path && conf?.template) {
+        const strategy = new Strategy(projectName, path);
+        // @ts-ignore - 动态调用模板方法
+        await strategy?.[conf.template]?.(conf);
+      }
+    } catch (error) {
+      // 检查是否是远程仓库同名错误，如果不是则清理远程仓库
+      const errorMessage = error?.toString() || "";
+      if (!errorMessage.includes("already exists") && !errorMessage.includes("name already exists")) {
+        await cleanupRemoteRepo();
+      }
+      throw error;
     }
   },
 });

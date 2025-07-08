@@ -1,6 +1,6 @@
 import fs from "fs-extra";
 import { resolve } from "pathe";
-import { init, initInstall, initCommitPush } from "../utils/init";
+import { init, initInstall, initCommitPush, cleanupRemoteRepo } from "../utils/init";
 import type { CreateConfig } from "../inquirer/create";
 
 /**
@@ -24,24 +24,33 @@ export default class BaseStrategy {
     conf: CreateConfig,
     themeHandler?: (path: string) => Promise<void>
   ) {
-    const packagePath = resolve(this.path, "./package.json");
-    const pkg = await this._updatePackageJson(packagePath, conf);
+    let sshUrl = "";
+    try {
+      const packagePath = resolve(this.path, "./package.json");
+      const pkg = await this._updatePackageJson(packagePath, conf);
 
-    // 处理主题功能
-    const features = conf.features || [];
-    if (!features?.includes?.("theme") && themeHandler) {
-      await themeHandler(this.path);
+      // 处理主题功能
+      const features = conf.features || [];
+      if (!features?.includes?.("theme") && themeHandler) {
+        await themeHandler(this.path);
+      }
+
+      // 创建远程仓库，初始化 git
+      sshUrl = await init(pkg);
+
+      // 重新写入 package.json
+      fs.writeFileSync(packagePath, JSON.stringify(pkg, null, 2));
+
+      // 安装依赖和提交代码
+      await initInstall(pkg.name);
+      if (sshUrl) await initCommitPush(pkg.name);
+    } catch (error) {
+      // 如果在初始化过程中出现错误且已创建远程仓库，则清理
+      if (sshUrl) {
+        await cleanupRemoteRepo();
+      }
+      throw error;
     }
-
-    // 创建远程仓库，初始化 git
-    const sshUrl = await init(pkg);
-
-    // 重新写入 package.json
-    fs.writeFileSync(packagePath, JSON.stringify(pkg, null, 2));
-
-    // 安装依赖和提交代码
-    await initInstall(pkg.name);
-    if (sshUrl) await initCommitPush(pkg.name);
   }
 
   /**

@@ -63,6 +63,10 @@ export async function download(repoName: string, conf: CreateConfig) {
       ]);
       if (res.override) {
         await fs.emptyDir(`./${dirName}`);
+      } else {
+        // 用户选择不覆盖，退出程序
+        console.log(chalk.yellow("❌ 已取消创建项目"));
+        process.exit(0);
       }
     }
 

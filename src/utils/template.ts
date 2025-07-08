@@ -1,6 +1,6 @@
 import { TemplateMap } from "../config/templates";
 import type { CreateConfig } from "../inquirer/create";
-
+import { DEFAULT_BRANCH } from "../constants";
 /**
  * 根据配置生成仓库分支名称
  * @param conf 配置对象
@@ -10,7 +10,7 @@ export function getRepoBranchName(conf: CreateConfig): string {
   const features = conf.features || [];
   const component = conf.component;
 
-  let refName = "main";
+  let refName = DEFAULT_BRANCH;
 
   if (features.includes("i18n")) {
     refName = component ? `${component}-i18n` : "i18n";
