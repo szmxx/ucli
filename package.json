@@ -1,6 +1,6 @@
 {
   "name": "@szmxx/ucli",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "A unified scaffold tool",
   "packageManager": "pnpm@8.6.11",
   "author": {

@@ -1,6 +1,18 @@
 # Changelog
 
 
+## v0.0.8
+
+[compare changes](https://github.com/szmxx/ucli/compare/v0.0.7...v0.0.8)
+
+### 🤖 CI
+
+- 更新 GitHub Actions 配置和依赖版本 ([c3da819](https://github.com/szmxx/ucli/commit/c3da819))
+
+### ❤️ Contributors
+
+- Cola <szmintel@gmail.com>
+
 ## v0.0.7
 
 [compare changes](https://github.com/szmxx/ucli/compare/v0.0.6...v0.0.7)
