@@ -1,6 +1,18 @@
 # Changelog
 
 
+## v0.0.9
+
+[compare changes](https://github.com/szmxx/ucli/compare/v0.0.8...v0.0.9)
+
+### 🚀 Enhancements
+
+- 添加远程仓库清理功能并改进错误处理 ([1ede289](https://github.com/szmxx/ucli/commit/1ede289))
+
+### ❤️ Contributors
+
+- Cola <szmintel@gmail.com>
+
 ## v0.0.8
 
 [compare changes](https://github.com/szmxx/ucli/compare/v0.0.7...v0.0.8)
